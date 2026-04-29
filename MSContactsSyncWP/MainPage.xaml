@@ -1,0 +1,179 @@
+<!--
+    MainPage.xaml  — WP8.1 Silverlight
+    Namespace change: xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      (same root for Silverlight)
+    x:Class must match WP8.1 page class.
+    Controls are identical; removed UWP-specific ThemeResource references.
+    Pivot is available in Windows Phone Toolkit or via the built-in
+      Microsoft.Phone.Controls.Pivot.
+-->
+<phone:PhoneApplicationPage
+    x:Class="MSContactsSyncWP.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait"
+    shell:SystemTray.IsVisible="True">
+
+    <phone:Pivot x:Name="MainPivot" Title="MS Contact Sync">
+
+        <!-- ======== SIGN IN ======== -->
+        <phone:PivotItem Header="sign in">
+            <ScrollViewer>
+                <StackPanel Margin="12,0,12,24">
+                    <TextBlock Text="Microsoft Account"
+                               FontSize="28" FontWeight="Bold"
+                               Margin="0,16,0,16"/>
+
+                    <Border Background="#1AFFFFFF" Padding="12" Margin="0,0,0,12">
+                        <StackPanel>
+                            <!-- Custom Client ID -->
+                            <CheckBox x:Name="ChkCustomClientId"
+                                      Content="Use custom App Registration ID"
+                                      FontSize="18"
+                                      Foreground="#AAAAAA"
+                                      Margin="0,0,0,8"
+                                      Checked="ChkCustomClientId_Changed"
+                                      Unchecked="ChkCustomClientId_Changed"/>
+
+                            <StackPanel x:Name="PanelClientId"
+                                        Visibility="Collapsed"
+                                        Margin="0,0,0,16">
+                                <TextBlock Text="App Registration Client ID"
+                                           FontSize="16" Foreground="#AAAAAA"
+                                           Margin="0,0,0,4"/>
+                                <!-- WP8.1: PasswordBox works fine -->
+                                <PasswordBox x:Name="TxtClientId"
+                                             FontSize="20"
+                                             Margin="0,0,0,4"/>
+                                <TextBlock Text="Leave blank to use built-in ID"
+                                           FontSize="15" Foreground="#666666"/>
+                            </StackPanel>
+
+                            <Button x:Name="BtnSignIn"
+                                    Content="Sign in with Microsoft"
+                                    HorizontalAlignment="Stretch"
+                                    Height="90" FontSize="22"
+                                    Click="BtnSignIn_Click"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Device code panel -->
+                    <Border x:Name="PanelCode"
+                            Background="#222222" Padding="16"
+                            Visibility="Collapsed" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Open this URL in a browser:"
+                                       FontSize="18" TextWrapping="Wrap"
+                                       Margin="0,0,0,8"/>
+                            <TextBlock x:Name="TxtVerificationUrl"
+                                       FontSize="17" Foreground="#0088FF"
+                                       TextWrapping="Wrap" Margin="0,0,0,16"/>
+                            <TextBlock Text="Enter this code:"
+                                       FontSize="18" Margin="0,0,0,8"/>
+                            <TextBlock x:Name="TxtUserCode"
+                                       FontSize="46" FontWeight="Bold"
+                                       Foreground="Orange"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,16"/>
+                            <!-- WP8.1 ProgressBar IsIndeterminate -->
+                            <ProgressBar IsIndeterminate="True" Height="8"/>
+                            <TextBlock Text="Waiting for authorization..."
+                                       FontSize="16" Foreground="#AAAAAA"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,8,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock x:Name="TxtLoginStatus"
+                               FontSize="18" TextWrapping="Wrap"
+                               Foreground="#FF4444" Margin="0,4,0,0"/>
+                </StackPanel>
+            </ScrollViewer>
+        </phone:PivotItem>
+
+        <!-- ======== SYNC ======== -->
+        <phone:PivotItem Header="sync">
+            <ScrollViewer>
+                <StackPanel Margin="12,0,12,24">
+                    <TextBlock Text="Sync Contacts"
+                               FontSize="28" FontWeight="Bold"
+                               Margin="0,16,0,4"/>
+
+                    <TextBlock x:Name="TxtAccountStatus"
+                               FontSize="18" Foreground="#44AA44"
+                               Margin="0,0,0,12"/>
+
+                    <Button x:Name="BtnSync"
+                            Content="Microsoft → Phone"
+                            HorizontalAlignment="Stretch"
+                            Height="90" FontSize="22"
+                            IsEnabled="False"
+                            Click="BtnSync_Click"
+                            Margin="0,0,0,8"/>
+
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="BtnSignOut"
+                                Grid.Column="0"
+                                Content="Sign out"
+                                Height="90" FontSize="22"
+                                IsEnabled="False"
+                                Click="BtnSignOut_Click"
+                                Margin="0,0,4,0"/>
+                        <Button x:Name="BtnEmailLog"
+                                Grid.Column="1"
+                                Content="Email log"
+                                Height="90" FontSize="22"
+                                Click="BtnEmailLog_Click"
+                                Margin="4,0,0,0"/>
+                    </Grid>
+
+                    <TextBlock x:Name="TxtLastSync"
+                               FontSize="16" Foreground="#888888"
+                               Margin="0,0,0,8"
+                               Visibility="Collapsed"/>
+                </StackPanel>
+            </ScrollViewer>
+        </phone:PivotItem>
+
+        <!-- ======== LOG ======== -->
+        <phone:PivotItem Header="log">
+            <Grid Margin="12,8,12,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Button x:Name="BtnClearLog"
+                        Grid.Row="0"
+                        Content="Clear log"
+                        HorizontalAlignment="Right"
+                        Height="70" FontSize="18"
+                        Click="BtnClearLog_Click"
+                        Margin="0,0,0,4"/>
+
+                <Border Grid.Row="1" Background="#111111" Padding="8">
+                    <ScrollViewer x:Name="LogScroller">
+                        <TextBlock x:Name="TxtLog"
+                                   FontSize="16"
+                                   FontFamily="Courier New"
+                                   TextWrapping="Wrap"
+                                   Foreground="#CCCCCC"/>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </phone:PivotItem>
+
+    </phone:Pivot>
+</phone:PhoneApplicationPage>
